@@ -4,19 +4,19 @@ import math
  
 from PIL import Image
  
-# gray scale level values from:
-# http://paulbourke.net/dataformats/asciiart/
- 
 # 70 levels of gray
 gscale1 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
- 
 # 10 levels of gray
 gscale2 = '@%#*+=-:. '
-#gscale2 = '1723546809'
-#scale2 = '0896453271'
+
+# 10 levels of numeric grey
+gscale3 = '0896453271'
+
+# luminocity groups. Char will be chosen randomly from each group
+lumaGroups = ['086','4', '7', '1']
  
 def getAverageL(image):
- 
+
     """
     Given PIL Image, return average value of grayscale value
     """
@@ -29,12 +29,12 @@ def getAverageL(image):
     # get average
     return np.average(im.reshape(w*h))
  
-def covertImageToAscii(fileName, cols, scale, moreLevels):
+def covertImageToAscii(fileName, cols, scale, borderWidth, borderChar):
     """
     Given Image and dims (rows, cols) returns an m*n list of Images
     """
     # declare globals
-    global gscale1, gscale2
+    global gscale1, gscale2, gscale3, lumaGroups
  
     # open image and convert to grayscale
     image = Image.open(fileName).convert('L')
@@ -89,15 +89,21 @@ def covertImageToAscii(fileName, cols, scale, moreLevels):
  
             # get average luminance
             avg = int(getAverageL(img))
- 
-            # look up ascii char
-            if moreLevels:
-                gsval = gscale1[int((avg*69)/255)]
-            else:
-                gsval = gscale2[int((avg*9)/255)]
- 
+            
+            # find which luma group tile corresponds to
+            lumaNumber = int((avg*(len(lumaGroups)-1))/255)
+
+            # pick a random value within that group for the tile
+            gsval = lumaGroups[lumaNumber][random.randint(0, len(lumaGroups[lumaNumber])-1)]
+            
+            topBorderWidth = round(borderWidth / 2.0)
+            # check if current tile is part of the border and if so change it to borderChar
+            if (j in [*[r for r in range(0, topBorderWidth)], *[r for r in range(rows-topBorderWidth, rows)]]) or (i in [*[c for c in range(0, borderWidth)], *[c for c in range(cols-borderWidth, cols)]]):
+                gsval = borderChar
+            
             # append ascii char to string
             aimg[j] += gsval
+
      
     # return txt image
     return aimg
@@ -112,7 +118,9 @@ def main():
     parser.add_argument('--scale', dest='scale', required=False)
     parser.add_argument('--out', dest='outFile', required=False)
     parser.add_argument('--cols', dest='cols', required=False)
-    parser.add_argument('--morelevels',dest='moreLevels',action='store_true')
+    parser.add_argument('--border', dest='border', action='store_true', required=False)
+    parser.add_argument('--borderWidth', dest='borderWidth', required=False)
+    parser.add_argument('--borderChar', dest='borderChar', required=False)
  
     # parse args
     args = parser.parse_args()
@@ -134,11 +142,23 @@ def main():
     cols = 80
     if args.cols:
         cols = int(args.cols)
- 
+    
+    # set border
+    borderWidth = 0
+    if args.border:
+        borderWidth = 3
+    if args.borderWidth:
+        borderWidth = int(args.borderWidth)
+
+    # set borderChar
+    borderChar = '0'
+    if args.borderChar:
+        borderChar = args.borderChar
+
     print('generating ASCII art...')
     # convert image to ascii txt
-    aimg = covertImageToAscii(imgFile, cols, scale, args.moreLevels)
- 
+    aimg = covertImageToAscii(imgFile, cols, scale, borderWidth, borderChar)
+
     # write to file
     with open(outFile, 'w') as f:
         for row in aimg:
