@@ -173,6 +173,8 @@ def main():
     for prob in [0.5, 0.9, 0.99, 0.999]:
         print(f"Estimated time to find prime with {100*prob:.1f}% probability: {str(datetime.timedelta(seconds=round(durationForSingleCheck * probableTrailCountEstimate(prob))))}")
 
+    # ------------------------------- Ask user if they want to primify the image ---------------------------------
+
     # ask user if they want to move on
     print('\nWould you like to primify this image? (y/n)')
     ans = input('--> ')
@@ -191,8 +193,6 @@ def main():
         print(row)
 
 
-
- 
 # call main
 if __name__ == '__main__':
     main()
