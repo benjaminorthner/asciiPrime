@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <unistd.h>
+#include <time.h>
 
 
 // takes a string of digits, check if they are prime, if not reassigns the digits within the luminoscity groups, repeating the process until a prime is found
@@ -98,4 +98,45 @@ char *primify(char *asciiImageString, int width, int height, int borderWidth, ch
     
     // return the prime image string
     return asciiImageString;
+}
+
+// function that runs prime calc on asciiImageString multiple times, to estmate how long each prime calc takes
+double estimateCalcDuration(char *asciiImageString, int numberOfPrimeChecks, int numberOfTrials) {
+    // initialise GMP variables
+    mpz_t primeCandidateGMP;
+    mpz_init(primeCandidateGMP);
+
+    // convert the primeCandidate string to a GMP number (in base 10), and check if it failed
+    int flag = mpz_set_str(primeCandidateGMP, asciiImageString, 10);
+    assert(flag == 0);
+
+    // initialise variables
+    double totalDuration = 0;
+    double duration = 0;
+
+    // run prime calc multiple times, and calculate the average duration
+    for (int i = 0; i < numberOfTrials; i++) {
+        // start timer
+        clock_t start = clock();
+        
+        // check if the GMP number is prime (returns 2 if prime, 1 if probably prime and 0 if definitely not prime)
+        int isPrime = mpz_probab_prime_p(primeCandidateGMP, numberOfPrimeChecks);
+
+        // increse number by 2, to prevent compiler optimisation
+        mpz_add_ui(primeCandidateGMP, primeCandidateGMP, 2);
+
+        // stop timer
+        clock_t end = clock();
+
+        // calculate duration
+        duration = (double)(end - start) / CLOCKS_PER_SEC;
+        totalDuration += duration;
+
+    }
+
+    // free GMP variables
+    mpz_clear(primeCandidateGMP);
+
+    // return the average duration
+    return totalDuration / numberOfTrials;
 }

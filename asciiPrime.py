@@ -1,17 +1,9 @@
-import random, argparse, sys
+import random, argparse, sys, datetime
 import numpy as np
 import cWrapper
  
 from PIL import Image
  
-# 70 levels of gray
-gscale1 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
-# 10 levels of gray
-gscale2 = '@%#*+=-:. '
-
-# 10 levels of numeric grey
-gscale3 = '0896453271'
-
 # luminocity groups. Char will be chosen randomly from each group
 luminosityGroups = ['089','4', '73', '1']
  
@@ -34,7 +26,7 @@ def covertImageToAscii(fileName, cols, scale, borderWidth, borderChar):
     Given Image and dims (rows, cols) returns an m*n list of Images
     """
     # declare globals
-    global gscale1, gscale2, gscale3, luminosityGroups, rows
+    global luminosityGroups, rows
  
     # open image and convert to grayscale
     image = Image.open(fileName).convert('L')
@@ -109,13 +101,14 @@ def covertImageToAscii(fileName, cols, scale, borderWidth, borderChar):
  
 # main() function
 def main():
+
+    # ------------------------------- ARGUMENT PARSER ---------------------------------
     # create parser
     descStr = "This program converts an image into ASCII art."
     parser = argparse.ArgumentParser(description=descStr)
     # add expected arguments
     parser.add_argument('--file', dest='imgFile', required=True)
     parser.add_argument('--scale', dest='scale', required=False)
-    parser.add_argument('--out', dest='outFile', required=False)
     parser.add_argument('--cols', dest='cols', required=False)
     parser.add_argument('--border', dest='border', action='store_true', required=False)
     parser.add_argument('--borderWidth', dest='borderWidth', required=False)
@@ -125,11 +118,6 @@ def main():
     args = parser.parse_args()
    
     imgFile = args.imgFile
- 
-    # set output file
-    outFile = 'out.txt'
-    if args.outFile:
-        outFile = args.outFile
  
     # set scale default as 0.43 which suits
     # a Courier font
@@ -143,7 +131,7 @@ def main():
         cols = int(args.cols)
     
     # set border
-    borderWidth = 0
+    borderWidth = 1
     if args.border:
         borderWidth = 3
     if args.borderWidth:
@@ -158,6 +146,8 @@ def main():
 
         borderChar = args.borderChar
 
+    # ------------------------------- Generate Ascii image ---------------------------------
+
     print('generating ASCII art...\n')
     # convert image to ascii txt
     asciiImage = covertImageToAscii(imgFile, cols, scale, borderWidth, borderChar)
@@ -166,17 +156,34 @@ def main():
     for row in asciiImage:
         print(row)
 
+    # ------------------------------- Estimate calc time ---------------------------------
+
+    # estimate how long it will take to primify the image
+    durationForSingleCheck = cWrapper.estimateCalcDuration(asciiImage, numberOfPrimeChecks=25, numberOfTrails=30)
+
+    # probability of a number of the order 10^(cols*rows) being prime
+    power = cols*rows
+    primeProbability = (9*power - 1 ) / (9*power *(power + 1) * np.log(10))
+
+    # function that returns number of trails needed to find a prime with probability S
+    probableTrailCountEstimate = lambda S: np.log(1 - S) / np.log(1 - primeProbability)
+
+    # display time estimates for different probabilities
+    print('\n')
+    for prob in [0.5, 0.9, 0.99, 0.999]:
+        print(f"Estimated time to find prime with {100*prob:.1f}% probability: {str(datetime.timedelta(seconds=round(durationForSingleCheck * probableTrailCountEstimate(prob))))}")
+
     # ask user if they want to move on
     print('\nWould you like to primify this image? (y/n)')
     ans = input('--> ')
     print('')
 
-
-    if ans == 'y' or ans == 'Y':
-        asciiImage = cWrapper.primify(asciiImage, cols, rows, borderWidth, luminosityGroups, numberOfPrimeChecks=25)
-    else:
+    if ans != 'y' and ans != 'Y':
         print('Image not primified.\nTerminating program.')
         sys.exit(0)
+
+    # ------------------------------- PRIMIFY IMAGE ---------------------------------
+    asciiImage = cWrapper.primify(asciiImage, cols, rows, borderWidth, luminosityGroups, numberOfPrimeChecks=25)
 
     # print image to terminal
     print("\nYour primified image:\n")
