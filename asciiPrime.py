@@ -107,13 +107,13 @@ def main():
     descStr = "This program converts an image into a prime number that is also ASCII art."
     parser = argparse.ArgumentParser(description=descStr)
     # add expected arguments
-    parser.add_argument('--file', dest='imgFile', required=True, description='path to image file')
-    parser.add_argument('--scale', dest='scale', required=False)
-    parser.add_argument('--cols', dest='cols', required=False, description='width of the final ascii image')
-    parser.add_argument('--borderWidth', dest='borderWidth', required=False, description='width of the border')
-    parser.add_argument('--borderChar', dest='borderChar', required=False, descirption='character to use for border, must be and odd number')
-    parser.add_argument('--invert', dest='invert', action='store_true', required=False, description='inverts colors of input image')
-    parser.add_argument('--autoSave', dest='autoSave', action='store_true', required=False, description='automatically saves ascii art to file, without prompting user')
+    parser.add_argument('--file', dest='imgFile', required=True, help='path to image file')
+    parser.add_argument('--scale', dest='scale', required=False, help='Vertical scaling of input image to compensate for non square "ascii pixels"')
+    parser.add_argument('--cols', dest='cols', required=False, help='width of the final ascii image')
+    parser.add_argument('--borderWidth', dest='borderWidth', required=False, help='width of the border')
+    parser.add_argument('--borderChar', dest='borderChar', required=False, help='character to use for border, must be and odd number')
+    parser.add_argument('--invert', dest='invert', action='store_true', required=False, help='inverts colors of input image')
+    parser.add_argument('--autoSave', dest='autoSave', action='store_true', required=False, help='automatically saves ascii art to file, without prompting user')
  
     # parse args
     args = parser.parse_args()
