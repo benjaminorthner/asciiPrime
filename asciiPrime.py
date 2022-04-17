@@ -133,8 +133,6 @@ def main():
     
     # set border
     borderWidth = 1
-    if args.border:
-        borderWidth = 3
     if args.borderWidth:
         borderWidth = int(args.borderWidth)
 

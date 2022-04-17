@@ -69,4 +69,4 @@ To compile the C code so that it can be used by the python wrapper function simp
 
 ## Rabin-Miller Pseudoprime test
 
-## Estimation of calc duration
+## Estimation of calculation duration
