@@ -1,3 +1,5 @@
 pictures
 *.out
 out.txt
+*.so
+__pycache__

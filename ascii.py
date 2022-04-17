@@ -1,6 +1,6 @@
-import sys, random, argparse
+import random, argparse, sys
 import numpy as np
-import math
+import cWrapper
  
 from PIL import Image
  
@@ -13,7 +13,7 @@ gscale2 = '@%#*+=-:. '
 gscale3 = '0896453271'
 
 # luminocity groups. Char will be chosen randomly from each group
-lumaGroups = ['086','4', '7', '1']
+luminosityGroups = ['089','4', '73', '1']
  
 def getAverageL(image):
 
@@ -34,7 +34,7 @@ def covertImageToAscii(fileName, cols, scale, borderWidth, borderChar):
     Given Image and dims (rows, cols) returns an m*n list of Images
     """
     # declare globals
-    global gscale1, gscale2, gscale3, lumaGroups
+    global gscale1, gscale2, gscale3, luminosityGroups, rows
  
     # open image and convert to grayscale
     image = Image.open(fileName).convert('L')
@@ -61,7 +61,7 @@ def covertImageToAscii(fileName, cols, scale, borderWidth, borderChar):
         exit(0)
  
     # ascii image is a list of character strings
-    aimg = []
+    asciiImage = []
     # generate list of dimensions
     for j in range(rows):
         y1 = int(j*h)
@@ -72,7 +72,7 @@ def covertImageToAscii(fileName, cols, scale, borderWidth, borderChar):
             y2 = H
  
         # append an empty string
-        aimg.append("")
+        asciiImage.append("")
  
         for i in range(cols):
  
@@ -91,10 +91,10 @@ def covertImageToAscii(fileName, cols, scale, borderWidth, borderChar):
             avg = int(getAverageL(img))
             
             # find which luma group tile corresponds to
-            lumaNumber = int((avg*(len(lumaGroups)-1))/255)
+            luminosityNumber = int((avg*(len(luminosityGroups)-1))/255)
 
             # pick a random value within that group for the tile
-            gsval = lumaGroups[lumaNumber][random.randint(0, len(lumaGroups[lumaNumber])-1)]
+            gsval = luminosityGroups[luminosityNumber][random.randint(0, len(luminosityGroups[luminosityNumber])-1)]
             
             topBorderWidth = round(borderWidth / 2.0)
             # check if current tile is part of the border and if so change it to borderChar
@@ -102,11 +102,10 @@ def covertImageToAscii(fileName, cols, scale, borderWidth, borderChar):
                 gsval = borderChar
             
             # append ascii char to string
-            aimg[j] += gsval
+            asciiImage[j] += gsval
 
-     
     # return txt image
-    return aimg
+    return asciiImage
  
 # main() function
 def main():
@@ -151,20 +150,41 @@ def main():
         borderWidth = int(args.borderWidth)
 
     # set borderChar
-    borderChar = '0'
+    borderChar = '1'
     if args.borderChar:
+        if int(borderChar) % 2 == 0:
+            print("borderChar must be an odd number!")
+            sys.exit(0)
+
         borderChar = args.borderChar
 
-    print('generating ASCII art...')
+    print('generating ASCII art...\n')
     # convert image to ascii txt
-    aimg = covertImageToAscii(imgFile, cols, scale, borderWidth, borderChar)
+    asciiImage = covertImageToAscii(imgFile, cols, scale, borderWidth, borderChar)
 
-    # write to file
-    with open(outFile, 'w') as f:
-        for row in aimg:
-            f.write(row + '\n')
+    #print image to terminal
+    for row in asciiImage:
+        print(row)
 
-        print("ASCII art written to %s" % outFile)
+    # ask user if they want to move on
+    print('\nWould you like to primify this image? (y/n)')
+    ans = input('--> ')
+    print('')
+
+
+    if ans == 'y' or ans == 'Y':
+        asciiImage = cWrapper.primify(asciiImage, cols, rows, borderWidth, luminosityGroups, numberOfPrimeChecks=25)
+    else:
+        print('Image not primified.\nTerminating program.')
+        sys.exit(0)
+
+    # print image to terminal
+    print("\nYour primified image:\n")
+    for row in asciiImage:
+        print(row)
+
+
+
  
 # call main
 if __name__ == '__main__':
