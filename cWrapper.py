@@ -10,8 +10,7 @@ import ctypes
 _primify = ctypes.CDLL('./primify.so')
 
 # tell ctypes what the data types are that the c functions primify() and estimateCalcDuration() require and return 
-# char **primify(char *asciiImageString, int width, int height, int borderWidth, char *luminosityGroupsString, int numberOfPrimeChecks) 
-_primify.primify.argtypes = (ctypes.c_char_p, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_int)
+_primify.primify.argtypes = (ctypes.c_char_p, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_double, ctypes.c_int)
 _primify.primify.restype = ctypes.c_char_p
 
 _primify.estimateCalcDuration.argtypes = (ctypes.c_char_p, ctypes.c_int, ctypes.c_int, ctypes.c_int)  
@@ -19,7 +18,7 @@ _primify.estimateCalcDuration.restype = ctypes.c_double
 
 
 # python wrapper function of c function primify()
-def primify(asciiImage, cols, rows, borderWidth, luminosityGroups, numberOfPrimeChecks):
+def primify(asciiImage, cols, rows, borderWidth, luminosityGroups, primeProbability, numberOfPrimeChecks):
     # make global to help interpreter find the c function
     global _primify
 
@@ -28,6 +27,7 @@ def primify(asciiImage, cols, rows, borderWidth, luminosityGroups, numberOfPrime
     rows_c = ctypes.c_int(rows)
     borderWidth_c = ctypes.c_int(borderWidth)
     numberOfGroups_c = ctypes.c_int(len(luminosityGroups))
+    primeProbability_c = ctypes.c_double(primeProbability)
     numberOfPrimeChecks_c = ctypes.c_int(numberOfPrimeChecks)
 
     # I can not get passing an array of strings to work with ctype, so I will convert asciiImage to a single continuous string
@@ -37,7 +37,7 @@ def primify(asciiImage, cols, rows, borderWidth, luminosityGroups, numberOfPrime
     luminosityGroups_c = ctypes.c_char_p('-'.join(luminosityGroups).encode('utf-8'))
     
     # call the c function and save results as primeAsciiImage
-    primeAsciiImageString = _primify.primify(asciiImageString_c, cols_c, rows_c, borderWidth_c, luminosityGroups_c, numberOfGroups_c, numberOfPrimeChecks_c)
+    primeAsciiImageString = _primify.primify(asciiImageString_c, cols_c, rows_c, borderWidth_c, luminosityGroups_c, numberOfGroups_c, primeProbability_c, numberOfPrimeChecks_c)
     
     # convert asciiImageString back to 2d array, and standard encoding
     primeAsciiImage = [primeAsciiImageString[i:i+cols].decode('utf-8') for i in range(0, len(primeAsciiImageString), cols)]

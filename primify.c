@@ -6,9 +6,14 @@
 #include <math.h>
 #include <time.h>
 
+// returns the probability that the prime was contained in the previously checked candidates
+// the closer to 100%, the more likely it is that it will be found soon
+double probabilityOfBeingFound(double primeProbability, int trialCount) {
+    return 1 - pow((1 - primeProbability), (double) trialCount);
+}
 
 // takes a string of digits, check if they are prime, if not reassigns the digits within the luminoscity groups, repeating the process until a prime is found
-char *primify(char *asciiImageString, int width, int height, int borderWidth, char *luminosityGroupsString, int numberOfPrimeChecks) {
+char *primify(char *asciiImageString, int width, int height, int borderWidth, char *luminosityGroupsString, double primeProbability, int numberOfPrimeChecks) {
 
     // count the number of occurances of '-' in the luminosity groups string
     int numberOfGroups = 1;
@@ -37,6 +42,7 @@ char *primify(char *asciiImageString, int width, int height, int borderWidth, ch
     int isPrime = 0;
     int estimatedChecks = strlen(asciiImageString) * log(10);
     int counter = 0;
+    clock_t start = clock();
     while (isPrime == 0) {
 
         // ---------------- Change the digits in the image ----------------
@@ -78,14 +84,16 @@ char *primify(char *asciiImageString, int width, int height, int borderWidth, ch
         isPrime = mpz_probab_prime_p(primeCandidateGMP, numberOfPrimeChecks);
         counter++;
 
-        //print progressbar
-        if (counter % 51 == 0) {
-            float progress = (counter * 100) / estimatedChecks;
-            printf("\rProgress: [%.0f%%], Prime candidates tested: %d", progress, counter);
+        //print progress
+        if (counter % 9 == 0) {
+            float progress = 100 * probabilityOfBeingFound(primeProbability, counter);
+            int hours = (int)((clock() - start) / (CLOCKS_PER_SEC * 3600));
+            int minutes = (int)((clock() - start) / (CLOCKS_PER_SEC * 60)) % 60;
+            
+            // weird errors when I assigned the seconds to a variable, hence built into printf
+            printf("\rProbability of prime having been found by now: [%.0f%%], Prime candidates tested: %d, Time elapsed: %02d:%02d:%02d", progress, counter, hours, minutes, (int)((clock() - start) / CLOCKS_PER_SEC) % 60);
             fflush(stdout);
 
-            // print primeCandidateGMP using gmp_printf
-            // gmp_printf("%Zd\n", primeCandidateGMP);
         }
 
         if (isPrime != 0) {

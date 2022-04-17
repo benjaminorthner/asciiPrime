@@ -7,6 +7,9 @@
 # Compiler
 CC = gcc
 
+# Other libraries (Math)
+OTHER-LINKS = -lm
+
 # Path to gmp library (default path alias is -lgmp)
 GMP_LINK = -lgmp
 
@@ -21,4 +24,4 @@ CTYPES_LINK = -shared -fPIC
 # ------------------------------------------------------------------------------------
 
 primify:
-	$(CC) -o primify.so primify.c $(GMP_LINK) $(CTYPES_LINK) 
+	$(CC) -o primify.so primify.c $(GMP_LINK) $(CTYPES_LINK) $(OTHER-LINKS)

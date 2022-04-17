@@ -146,6 +146,8 @@ def main():
 
         borderChar = args.borderChar
 
+    numberOfPrimeChecks = 25
+
     # ------------------------------- Generate Ascii image ---------------------------------
 
     print('generating ASCII art...\n')
@@ -159,7 +161,11 @@ def main():
     # ------------------------------- Estimate calc time ---------------------------------
 
     # estimate how long it will take to primify the image
-    durationForSingleCheck = cWrapper.estimateCalcDuration(asciiImage, numberOfPrimeChecks=25, maxNumberOfTrails=100, maxDuration=10)
+    print("Estimating time to primify image...", end="")
+    durationForSingleCheck = cWrapper.estimateCalcDuration(asciiImage, numberOfPrimeChecks=25, maxNumberOfTrails=30, maxDuration=10)
+    
+    # clear previous print
+    print("\r" + 50*" ", end="")
 
     # probability of a number of the order 10^(cols*rows) being prime
     power = cols*rows
@@ -185,13 +191,15 @@ def main():
         sys.exit(0)
 
     # ------------------------------- PRIMIFY IMAGE ---------------------------------
-    asciiImage = cWrapper.primify(asciiImage, cols, rows, borderWidth, luminosityGroups, numberOfPrimeChecks=25)
+    asciiImage = cWrapper.primify(asciiImage, cols, rows, borderWidth, luminosityGroups, primeProbability, numberOfPrimeChecks)
 
     # print image to terminal
-    print("\nYour primified image:\n")
+    print("\n------------------------------------- SUCESSFULLY PRIMIFIED IMAGE -------------------------------------\n")
     for row in asciiImage:
         print(row)
 
+    # print extra info
+    print(f'\nThe probability of this number being truly prime is:\t{(1- 0.25**numberOfPrimeChecks)*100:.20f}%')
 
 # call main
 if __name__ == '__main__':
