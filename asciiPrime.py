@@ -107,13 +107,13 @@ def main():
     descStr = "This program converts an image into a prime number that is also ASCII art."
     parser = argparse.ArgumentParser(description=descStr)
     # add expected arguments
-    parser.add_argument('--file', dest='imgFile', required=True)
+    parser.add_argument('--file', dest='imgFile', required=True, description='path to image file')
     parser.add_argument('--scale', dest='scale', required=False)
-    parser.add_argument('--cols', dest='cols', required=False)
-    parser.add_argument('--border', dest='border', action='store_true', required=False)
-    parser.add_argument('--borderWidth', dest='borderWidth', required=False)
-    parser.add_argument('--borderChar', dest='borderChar', required=False)
-    parser.add_argument('--invert', dest='invert', action='store_true', required=False)
+    parser.add_argument('--cols', dest='cols', required=False, description='width of the final ascii image')
+    parser.add_argument('--borderWidth', dest='borderWidth', required=False, description='width of the border')
+    parser.add_argument('--borderChar', dest='borderChar', required=False, descirption='character to use for border, must be and odd number')
+    parser.add_argument('--invert', dest='invert', action='store_true', required=False, description='inverts colors of input image')
+    parser.add_argument('--autoSave', dest='autoSave', action='store_true', required=False, description='automatically saves ascii art to file, without prompting user')
  
     # parse args
     args = parser.parse_args()
@@ -150,6 +150,11 @@ def main():
     # set invert
     if args.invert:
         luminosityGroups = luminosityGroups[::-1]
+
+    # set autoSave
+    autoSave = False
+    if args.autoSave:
+        autoSave = True
 
     numberOfPrimeChecks = 25
 
@@ -210,11 +215,12 @@ def main():
 
     # ------------------------------- Ask user if they want to save the image ---------------------------------
 
-    print('\nWould you like to save this image? (y/n)')    
-    ans = input('--> ')
-    if ans != 'y' and ans != 'Y':
-        print("\n-------------------------------- Program Terminated --------------------------------\n")
-        sys.exit(0)
+    if not autoSave:
+        print('\nWould you like to save this image? (y/n)')    
+        ans = input('--> ')
+        if ans != 'y' and ans != 'Y':
+            print("\n-------------------------------- Program Terminated --------------------------------\n")
+            sys.exit(0)
 
     # ------------------------------- SAVE IMAGE ---------------------------------
 
