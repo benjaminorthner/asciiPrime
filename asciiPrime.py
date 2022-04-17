@@ -5,8 +5,8 @@ import cWrapper
 from PIL import Image
  
 # luminocity groups. Char will be chosen randomly from each group
-luminosityGroups = ['089','4', '73', '1']
- 
+luminosityGroups = ['1', '73', '4', '089']
+
 def getAverageL(image):
 
     """
@@ -101,10 +101,10 @@ def covertImageToAscii(fileName, cols, scale, borderWidth, borderChar):
  
 # main() function
 def main():
-
+    global luminosityGroups
     # ------------------------------- ARGUMENT PARSER ---------------------------------
     # create parser
-    descStr = "This program converts an image into ASCII art."
+    descStr = "This program converts an image into a prime number that is also ASCII art."
     parser = argparse.ArgumentParser(description=descStr)
     # add expected arguments
     parser.add_argument('--file', dest='imgFile', required=True)
@@ -113,6 +113,7 @@ def main():
     parser.add_argument('--border', dest='border', action='store_true', required=False)
     parser.add_argument('--borderWidth', dest='borderWidth', required=False)
     parser.add_argument('--borderChar', dest='borderChar', required=False)
+    parser.add_argument('--invert', dest='invert', action='store_true', required=False)
  
     # parse args
     args = parser.parse_args()
@@ -146,6 +147,10 @@ def main():
 
         borderChar = args.borderChar
 
+    # set invert
+    if args.invert:
+        luminosityGroups = luminosityGroups[::-1]
+
     numberOfPrimeChecks = 25
 
     # ------------------------------- Generate Ascii image ---------------------------------
@@ -155,17 +160,19 @@ def main():
     asciiImage = covertImageToAscii(imgFile, cols, scale, borderWidth, borderChar)
 
     #print image to terminal
+    print('')
     for row in asciiImage:
         print(row)
 
     # ------------------------------- Estimate calc time ---------------------------------
 
     # estimate how long it will take to primify the image
-    print("Estimating time to primify image...", end="")
+    print("\nEstimating time to primify image...", end="")
+    sys.stdout.flush()
     durationForSingleCheck = cWrapper.estimateCalcDuration(asciiImage, numberOfPrimeChecks=25, maxNumberOfTrails=30, maxDuration=10)
-    
+
     # clear previous print
-    print("\r" + 50*" ", end="")
+    print('', end="\r")
 
     # probability of a number of the order 10^(cols*rows) being prime
     power = cols*rows
@@ -175,9 +182,8 @@ def main():
     probableTrailCountEstimate = lambda S: np.log(1 - S) / np.log(1 - primeProbability)
 
     # display time estimates for different probabilities
-    print('')
     for prob in [0.5, 0.9, 0.99, 0.999]:
-        print(f"\t{100*prob:.1f}% probability of finding prime within: {str(datetime.timedelta(seconds=round(durationForSingleCheck * probableTrailCountEstimate(prob))))}")
+        print(f"    {100*prob:.1f}% probability of finding prime within: {str(datetime.timedelta(seconds=round(durationForSingleCheck * probableTrailCountEstimate(prob))))}")
 
     # ------------------------------- Ask user if they want to primify the image ---------------------------------
 
@@ -187,7 +193,8 @@ def main():
     print('')
 
     if ans != 'y' and ans != 'Y':
-        print('Image not primified.\nTerminating program.')
+        print('Image not primified.')
+        print("\n-------------------------------- Program Terminated --------------------------------\n")
         sys.exit(0)
 
     # ------------------------------- PRIMIFY IMAGE ---------------------------------
@@ -200,6 +207,37 @@ def main():
 
     # print extra info
     print(f'\nThe probability of this number being truly prime is:\t{(1- 0.25**numberOfPrimeChecks)*100:.20f}%')
+
+    # ------------------------------- Ask user if they want to save the image ---------------------------------
+
+    print('\nWould you like to save this image? (y/n)')    
+    ans = input('--> ')
+    if ans != 'y' and ans != 'Y':
+        print("\n-------------------------------- Program Terminated --------------------------------\n")
+        sys.exit(0)
+
+    # ------------------------------- SAVE IMAGE ---------------------------------
+
+    fileName = imgFile.rsplit(".", 1)[0].rsplit("/", 1)[1] + f"_primified_cols_{cols}.txt"
+    with open(fileName, "w") as f:
+        
+        f.write("\n------------------------------------- Sucessfully primified image -------------------------------------\n\n")
+
+        for row in asciiImage:
+            f.write(row + "\n")
+        
+        f.write("\n------------------------------------- Number as single string -------------------------------------\n\n")
+        f.write(''.join(asciiImage))
+
+        f.write("\n\n-------------------------------------------- Properties --------------------------------------------\n\n")
+        f.write(f"Number of columns: {cols}\n")
+        f.write(f"Number of rows: {rows}\n")
+        f.write(f"Number of digits: {cols*rows}\n")
+
+    print("\nSaved image to: ", fileName)
+    print("\n-------------------------------- Program Terminated --------------------------------\n")
+
+
 
 # call main
 if __name__ == '__main__':

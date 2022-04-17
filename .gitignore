@@ -4,3 +4,4 @@ out.txt
 *.so
 __pycache__
 prime.py
+*.txt
