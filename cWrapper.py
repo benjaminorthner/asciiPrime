@@ -14,7 +14,7 @@ _primify = ctypes.CDLL('./primify.so')
 _primify.primify.argtypes = (ctypes.c_char_p, ctypes.c_int, ctypes.c_int, ctypes.c_int, ctypes.c_char_p, ctypes.c_int, ctypes.c_int)
 _primify.primify.restype = ctypes.c_char_p
 
-_primify.estimateCalcDuration.argtypes = (ctypes.c_char_p, ctypes.c_int, ctypes.c_int)  
+_primify.estimateCalcDuration.argtypes = (ctypes.c_char_p, ctypes.c_int, ctypes.c_int, ctypes.c_int)  
 _primify.estimateCalcDuration.restype = ctypes.c_double
 
 
@@ -45,15 +45,16 @@ def primify(asciiImage, cols, rows, borderWidth, luminosityGroups, numberOfPrime
 
 
 # python wrapper function of c function estimateCalcDuration()
-def estimateCalcDuration(asciiImage, numberOfPrimeChecks, numberOfTrails):
+def estimateCalcDuration(asciiImage, numberOfPrimeChecks, maxNumberOfTrails, maxDuration):
     # make global to help interpreter find the c function
     global _estimateCalcDuration
 
     # convert variables into ctypes
     asciiImageString_c = ctypes.c_char_p(''.join(asciiImage).encode('utf-8'))
     numberOfPrimeChecks_c = ctypes.c_int(numberOfPrimeChecks)
-    numberOfTrails_c = ctypes.c_int(numberOfTrails)
+    maxNumberOfTrails_c = ctypes.c_int(maxNumberOfTrails)
+    maxDuration_c = ctypes.c_int(maxDuration)
 
     # call the c function and save results as primeAsciiImage
-    duration = _primify.estimateCalcDuration(asciiImageString_c, numberOfPrimeChecks_c, numberOfTrails_c)
+    duration = _primify.estimateCalcDuration(asciiImageString_c, numberOfPrimeChecks_c, maxNumberOfTrails_c, maxDuration_c)
     return duration

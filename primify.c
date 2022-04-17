@@ -101,7 +101,7 @@ char *primify(char *asciiImageString, int width, int height, int borderWidth, ch
 }
 
 // function that runs prime calc on asciiImageString multiple times, to estmate how long each prime calc takes
-double estimateCalcDuration(char *asciiImageString, int numberOfPrimeChecks, int numberOfTrials) {
+double estimateCalcDuration(char *asciiImageString, int numberOfPrimeChecks, int maxNumberOfTrials, int maxDuration) {
     // initialise GMP variables
     mpz_t primeCandidateGMP;
     mpz_init(primeCandidateGMP);
@@ -113,9 +113,10 @@ double estimateCalcDuration(char *asciiImageString, int numberOfPrimeChecks, int
     // initialise variables
     double totalDuration = 0;
     double duration = 0;
+    int trials = 0;
 
     // run prime calc multiple times, and calculate the average duration
-    for (int i = 0; i < numberOfTrials; i++) {
+    for (int i = 0; i < maxNumberOfTrials; i++) {
         // start timer
         clock_t start = clock();
         
@@ -132,11 +133,17 @@ double estimateCalcDuration(char *asciiImageString, int numberOfPrimeChecks, int
         duration = (double)(end - start) / CLOCKS_PER_SEC;
         totalDuration += duration;
 
+        trials++;
+
+        // end if maxDuration is reached
+        if (totalDuration > maxDuration) {
+            break;
+        }
     }
 
     // free GMP variables
     mpz_clear(primeCandidateGMP);
 
     // return the average duration
-    return totalDuration / numberOfTrials;
+    return totalDuration / trials;
 }

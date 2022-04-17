@@ -159,7 +159,7 @@ def main():
     # ------------------------------- Estimate calc time ---------------------------------
 
     # estimate how long it will take to primify the image
-    durationForSingleCheck = cWrapper.estimateCalcDuration(asciiImage, numberOfPrimeChecks=25, numberOfTrails=30)
+    durationForSingleCheck = cWrapper.estimateCalcDuration(asciiImage, numberOfPrimeChecks=25, maxNumberOfTrails=100, maxDuration=10)
 
     # probability of a number of the order 10^(cols*rows) being prime
     power = cols*rows
@@ -169,9 +169,9 @@ def main():
     probableTrailCountEstimate = lambda S: np.log(1 - S) / np.log(1 - primeProbability)
 
     # display time estimates for different probabilities
-    print('\n')
+    print('')
     for prob in [0.5, 0.9, 0.99, 0.999]:
-        print(f"Estimated time to find prime with {100*prob:.1f}% probability: {str(datetime.timedelta(seconds=round(durationForSingleCheck * probableTrailCountEstimate(prob))))}")
+        print(f"\t{100*prob:.1f}% probability of finding prime within: {str(datetime.timedelta(seconds=round(durationForSingleCheck * probableTrailCountEstimate(prob))))}")
 
     # ------------------------------- Ask user if they want to primify the image ---------------------------------
 
