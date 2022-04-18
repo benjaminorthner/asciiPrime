@@ -47,7 +47,7 @@ def primify(asciiImage, cols, rows, borderWidth, luminosityGroups, primeProbabil
 # python wrapper function of c function estimateCalcDuration()
 def estimateCalcDuration(asciiImage, numberOfPrimeChecks, maxNumberOfTrails, maxDuration):
     # make global to help interpreter find the c function
-    global _estimateCalcDuration
+    global _primify
 
     # convert variables into ctypes
     asciiImageString_c = ctypes.c_char_p(''.join(asciiImage).encode('utf-8'))

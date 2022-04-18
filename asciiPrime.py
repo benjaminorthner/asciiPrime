@@ -172,7 +172,7 @@ def main():
     # estimate how long it will take to primify the image
     print("\nEstimating time to primify image...", end="")
     sys.stdout.flush()
-    durationForSingleCheck = cWrapper.estimateCalcDuration(asciiImage, numberOfPrimeChecks=25, maxNumberOfTrails=30, maxDuration=10)
+    durationForSingleCheck = cWrapper.estimateCalcDuration(asciiImage, numberOfPrimeChecks=25, maxNumberOfTrails=100, maxDuration=10)
 
     # clear previous print
     print('', end="\r")
