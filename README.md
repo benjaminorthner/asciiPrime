@@ -52,7 +52,7 @@ Now unpack the downloaded file and navigate into it using
 ```bash
   sudo apt-get install lzip
   tar --lzip -xvf gmp-6.2.1.tar.lz
-  rm gmp-6.2.1.tar.lz
+  rm -f gmp-6.2.1.tar.lz
   cd gmp-6.2.1
 ```
 From here we use the GMP auto installer. Before we do that we must make sure our system is up to date with
@@ -68,15 +68,15 @@ In order to create the autoinstaller makefile we must first run the configurator
 
 Then we can run the GMP installer and additionally run a check using
 ```bash
-  make install
-  make check
+  sudo make install
+  sudo make check
 ```
 Even if the check fails, the code may still run without issues.
 
 After verifying that the code runs you can delete the gmp-6.2.1 folder using
 ```bash
   cd ..
-  rm -rf gmp-6.2.1
+  sudo rm -rf gmp-6.2.1
 ```
 
 ## Compiling the C code
