@@ -27,7 +27,8 @@ This is then multiplied with the average duration of 1 primality test to give th
 # Installation and Setup
 This guide is for the setup of _asciiPrime_ in Ubuntu via WSL.
 It is assumed you have 
-- Python 3
+- Python3, pip3
+- The python packages _numpy_ and _pillow_
 - gcc (c - compiler)
 
 already installed.
@@ -59,11 +60,7 @@ From here we use the GMP auto installer. Before we do that we must make sure our
   sudo apt-get update -y
   sudo apt-get upgrade -y
 ```
-In order to create the autoinstaller makefile we must first run the configurator
-```bash
-  ./configure
-```
-Depending on your system this may fail, in which case you will have to research yourself why. In my case I had to additionally install _m4_ and then rerun the configurator
+In order to create the autoinstaller makefile we must first run the configuratorm which itself requires the installation of _m4_
 ```bash
   sudo apt-get install m4
   ./configure
@@ -78,7 +75,8 @@ Even if the check fails, the code may still run without issues.
 
 After verifying that the code runs you can delete the gmp-6.2.1 folder using
 ```bash
-  rm -r gmp-6.2.1
+  cd ..
+  rm -rf gmp-6.2.1
 ```
 
 ## Compiling the C code
