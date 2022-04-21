@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="300" src="images/logo.png">
+  <img width="300" src="readme_images/logo.png">
 </p>
 
 # asciiPrime
