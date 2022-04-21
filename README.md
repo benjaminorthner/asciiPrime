@@ -65,7 +65,7 @@ If one prefers an inverted version of the image, they can use the `--invert` par
   <img width="200" src="readme_images/screenshot7.png">
 </p>
 
-The `--autoSave` parameter automatically confirms the message asking for the primified image to be saved. This may be useful for longer computation.
+The `--autoSave` parameter automatically confirms the message asking for the primified image to be saved. This may be useful for longer computations.
 
 And Finally the `--scale` parameter allows you to set the vertical scaling of the image, as this can change depending on the font used. The default is `0.46`. Smaller numbers lead to a more squashed image
 
