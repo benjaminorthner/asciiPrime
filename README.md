@@ -1,16 +1,101 @@
 <p align="center">
-  <img width="300" src="images/logo.png">
+  <img width="200" src="readme_images/logoCirc.png">
 </p>
 
 # asciiPrime
 Converts images into numerical ascii art which is also a prime number. Primality is checked using the Rabin-Miller Strong Pseudoprime Test, as shown in section 4.5.4 algorithm P of Donald E. Knuth's “The Art of Computer Programming”, volume 2
 
 # Usage Instructions
-We will first need an image to convert to into an AsciiPrime. The program can handle any standard _.png_ or _.jpg_, but for now it will only desaturate it and not do a particularly good job of posterising it. Thus it is recommended to start with images that already have a lot of contrast and lots of fully black and fully white sections.
+We will first need an image to convert to into an AsciiPrime. The program can handle any standard _.png_ or _.jpg_, but for now it will only desaturate it and not do a particularly good job of posterising it. Thus it is recommended to start with images that already have a lot of contrast and lots of fully black and fully white sections. 
 
-<p float="left">
-  <img src="/readme_images/mona.jpg" width="100" />
+A good example would be the following:
+
+<p align="center">
+  <img width="300" src="readme_images/mona.jpg">
 </p>
+
+To convert this image into a prime we run the command
+```bash
+  python3 asciiPrime.py --file images/mona.jpg 
+```
+The program will now display a sample ascii image, that is _not yet a prime number_. This image serves simply as a sample of what the result will roughly look like. Additionally, the program will display estimates of computation together with the confidence level at which that estimate is realised.
+
+<p align="center">
+  <img width="400" src="readme_images/screenshot1.png">
+</p>
+
+Responding with `--> y` will proceed with the computation, by the end of which a primified version of the above image will be shown.
+<p align="center">
+  <img width="400" src="readme_images/screenshot2.png">
+</p>
+
+The user is now asked if they would like to save the result. If they respond with `--> y` the program will save the image to a .txt file, both in its rectangular and in continues string form. Aditionally some statistics about the image, like its size will also be saved.
+
+## Customising the image
+When running the initial command there are various optional parameters that can be set. 
+
+For example a border can be added to the image, by setting the `--borderWidth` parameter to a value greater than 0.
+
+```bash
+  python3 asciiPrime.py --file images/mona.jpg --borderWidth 3
+```
+<p align="center">
+  <img width="400" src="readme_images/screenshot3.png">
+</p>
+
+The digit used for the border can be changed using the `--borderChar` parameter.
+
+One can vary the number of columns, or the width of the image using the `--cols` parameter. Setting this parameter to the values `30` or `50` and `130` results in the following images:
+```bash
+  python3 asciiPrime.py --file images/mona.jpg --cols 130
+```
+<p align="center">
+  <img width="200" src="readme_images/screenshot4.png">
+  <img width="200" src="readme_images/screenshot5.png">
+  <img width="200" src="readme_images/screenshot6.png">
+</p>
+
+If one prefers an inverted version of the image, they can use the `--invert` parameter. This is ideal for a black font on a white background
+
+```bash
+  python3 asciiPrime.py --file images/mona.jpg --invert
+```
+
+<p align="center">
+  <img width="200" src="readme_images/screenshot7.png">
+</p>
+
+The `--autoSave` parameter automatically confirms the message asking for the primified image to be saved. This may be useful for longer computation.
+
+And Finally the `--scale` parameter allows you to set the vertical scaling of the image, as this can change depending on the font used. The default is `0.46`. Smaller numbers lead to a more squashed image
+
+```bash
+  python3 asciiPrime.py --file images/mona.jpg --scale 0.3
+```
+<p align="center">
+  <img width="200" src="readme_images/screenshot8.png">
+</p>
+
+and larger numbers lead to a more stretched image
+
+```bash
+  python3 asciiPrime.py --file images/mona.jpg --scale 0.7
+```
+<p align="center">
+  <img width="200" src="readme_images/screenshot9.png">
+</p>
+
+# Installation and Setup
+This guide is for the setup of _asciiPrime_ in Ubuntu via WSL.
+It is assumed you have 
+- Python3, pip3
+- The python packages _numpy_ and _pillow_
+- gcc (c - compiler)
+
+```bash
+  python3 asciiPrime.py --file images/mona.jpg --scale 0.5
+```
+
 
 # Installation and Setup
 This guide is for the setup of _asciiPrime_ in Ubuntu via WSL.
