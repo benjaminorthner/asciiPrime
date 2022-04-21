@@ -6,6 +6,7 @@
 #include <math.h>
 #include <time.h>
 
+
 // returns the probability that the prime was contained in the previously checked candidates
 // the closer to 100%, the more likely it is that it will be found soon
 double probabilityOfBeingFound(double primeProbability, int trialCount) {
@@ -14,6 +15,9 @@ double probabilityOfBeingFound(double primeProbability, int trialCount) {
 
 // takes a string of digits, check if they are prime, if not reassigns the digits within the luminoscity groups, repeating the process until a prime is found
 char *primify(char *asciiImageString, int width, int height, int borderWidth, char *luminosityGroupsString, double primeProbability, int numberOfPrimeChecks) {
+
+    // use random seed
+    srand(time(0));
 
     // count the number of occurances of '-' in the luminosity groups string
     int numberOfGroups = 1;
@@ -68,8 +72,23 @@ char *primify(char *asciiImageString, int width, int height, int borderWidth, ch
             // replace current digit with a random one from the same luminosity group
             int randomNumber = rand() % strlen(luminosityGroups[groupNumber]);
             asciiImageString[index] = luminosityGroups[groupNumber][randomNumber];
-        }   
 
+            // for the first and last digits, check they are not even and not 5
+            if ((index == 0) || (index == strlen(asciiImageString) - 1)) {
+                // if the new digit is even or 5, replace it with a odd digit from the same luminosity group
+                if (asciiImageString[index] % 2 == 0 || asciiImageString[index] == '5') {
+                    // for now I am just hard coding the alternatives instead of searching each group for an odd digit
+                    if (asciiImageString[index] == 0 || asciiImageString[index] == 8) {
+                        asciiImageString[index] = '9';
+                    }
+                    else if (asciiImageString[index] == 4 || asciiImageString[index] == 5 || asciiImageString[index] == 2 || asciiImageString[index] == 6) {
+                        asciiImageString[index] = '1';
+                    }
+
+                }
+
+            }
+        }
         // ---------------- Check if asciiImageString is prime ----------------
 
         // initialise GMP variables

@@ -1,3 +1,4 @@
+from codecs import BufferedIncrementalEncoder
 import random, argparse, sys, datetime
 import numpy as np
 import cWrapper
@@ -87,14 +88,32 @@ def covertImageToAscii(fileName, cols, scale, borderWidth, borderChar):
 
             # pick a random value within that group for the tile
             gsval = luminosityGroups[luminosityNumber][random.randint(0, len(luminosityGroups[luminosityNumber])-1)]
-            
+
+            # if no border then make sure first and last digits are odd, and not 5
+            if borderWidth == 0:
+                if (i == 0 and j == 0) or (i == cols-1 and j == rows-1):
+                    if int(gsval) % 2 == 0 or int(gsval) % 5 == 0:
+
+                        # first try to find odd digit in same luminosity group
+                        for digit in luminosityGroups[luminosityNumber]:
+                            if int(digit) % 2 != 0 and int(digit) % 5 != 0:
+                                gsval = digit
+                                break
+                        
+                        # if all are even then just use borderChar
+                    if int(gsval) % 2 == 0 or int(gsval) % 5 == 0:
+                        gsval = borderChar
+
+            # looks better if border width on top is half of side border (aspect ratio) 
             topBorderWidth = round(borderWidth / 2.0)
+
             # check if current tile is part of the border and if so change it to borderChar
             if (j in [*[r for r in range(0, topBorderWidth)], *[r for r in range(rows-topBorderWidth, rows)]]) or (i in [*[c for c in range(0, borderWidth)], *[c for c in range(cols-borderWidth, cols)]]):
                 gsval = borderChar
-            
+             
             # append ascii char to string
             asciiImage[j] += gsval
+            
 
     # return txt image
     return asciiImage
@@ -132,15 +151,21 @@ def main():
         cols = int(args.cols)
     
     # set border
-    borderWidth = 1
+    borderWidth = 0
     if args.borderWidth:
         borderWidth = int(args.borderWidth)
 
     # set borderChar
     borderChar = '1'
     if args.borderChar:
-        if int(borderChar) % 2 == 0:
-            print("borderChar must be an odd number!")
+        try: 
+            int(args.borderChar)
+        except ValueError:
+            print("borderChar must be an odd digit and not 5")
+            sys.exit(0)
+
+        if int(args.borderChar) % 2 == 0 or int(args.borderChar) % 5 == 0:
+            print("borderChar must odd and not 5!")
             sys.exit(0)
 
         borderChar = args.borderChar
