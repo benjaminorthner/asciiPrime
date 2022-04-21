@@ -2,28 +2,12 @@
 Converts images into numerical ascii art which is also a prime number. Primality is checked using the Rabin-Miller Strong Pseudoprime Test, as shown in section 4.5.4 algorithm P of Donald E. Knuth's “The Art of Computer Programming”, volume 2
 
 # Usage Instructions
+We will first need an image to convert to into an AsciiPrime. The program can handle any standard _.png_ or _.jpg_, but for now it will only desaturate it and not do a particularly good job of posterising it. Thus it is recommended to start with images that already have a lot of contrast and lots of fully black and fully white sections.
 
-# Theory
+<p float="left">
+  <img src="/readme_images/mona.jpg" width="100" />
+</p>
 
-## Rabin-Miller Pseudoprime test
-
-## Estimation of calculation duration
-The prime counting function, which for any positive integer x gives a fairly good estimate of the number of primes below x is given by$$\pi(x) = \frac{x}{\ln(x)}$$
-
-We would like to know the probability is of any particular reconfiguration of our ascii image being prime. If our ascii image has $p$ digits, then we can assume that our possible primes will be in between $x=10^{p+1}$ and $x=10^p$.
-
-So the probability $P$ of any ascii image with $p$ digits being prime is
-$$ P(p) = \frac{\pi(10^{p+1}) - \pi(10^p)}{10^{p+1} - 10^p} = \frac{9p - 1}{9p(p+1)\ln(10)}$$
-Because our code only ever checks odd numbered ascii images the probability of finding a prime is twice as large and
-
-$$P(p) = \frac{2(9p - 1)}{9p(p+1)\ln(10)}$$
-
-Thus the probability $S$ of finding a prime after $n$ trails is given by
-$$ S = 1 - (1 - P(p))^n$$
-Which when solved for n gives, the number of trails necessary to find a prime ascii image with $p$ digits with a probability of $S$
-$$n(p,S) = \frac{\ln(1-S)}{\ln(1-P(p))}$$
-
-This is then multiplied with the average duration of 1 primality test to give the estimated computation times.
 # Installation and Setup
 This guide is for the setup of _asciiPrime_ in Ubuntu via WSL.
 It is assumed you have 
@@ -84,3 +68,29 @@ To compile the C code so that it can be used by the python wrapper function simp
 ```bash
   make primify
 ```
+
+# Theory
+
+## Rabin-Miller Pseudoprimality test
+Work in Progress. For now see [Wikipedia](https://en.wikipedia.org/wiki/Miller%E2%80%93Rabin_primality_test)
+
+## Estimation of calculation duration
+Stupid Github Markdown does not support Latex... so ignore this for now.
+
+
+The prime counting function, which for any positive integer x gives a fairly good estimate of the number of primes below x is given by$$\pi(x) = \frac{x}{\ln(x)}$$
+
+We would like to know the probability is of any particular reconfiguration of our ascii image being prime. If our ascii image has $p$ digits, then we can assume that our possible primes will be in between $x=10^{p+1}$ and $x=10^p$.
+
+So the probability $P$ of any ascii image with $p$ digits being prime is
+$$ P(p) = \frac{\pi(10^{p+1}) - \pi(10^p)}{10^{p+1} - 10^p} = \frac{9p - 1}{9p(p+1)\ln(10)}$$
+Because our code only ever checks odd numbered ascii images the probability of finding a prime is twice as large and
+
+$$P(p) = \frac{2(9p - 1)}{9p(p+1)\ln(10)}$$
+
+Thus the probability $S$ of finding a prime after $n$ trails is given by
+$$ S = 1 - (1 - P(p))^n$$
+Which when solved for n gives, the number of trails necessary to find a prime ascii image with $p$ digits with a probability of $S$
+$$n(p,S) = \frac{\ln(1-S)}{\ln(1-P(p))}$$
+
+This is then multiplied with the average duration of 1 primality test to give the estimated computation times.
