@@ -18,7 +18,7 @@ To convert this image into a prime we run the command
 ```bash
   python3 asciiPrime.py --file images/mona.jpg 
 ```
-The program will now display a sample ascii image, that is _not yet a prime number_. This image serves simply as a sample of what the result will roughly look like. Additionally, the program will display estimates of computation together with the confidence level at which that estimate is realised.
+The program will now display a sample ascii image, that is _not yet a prime number_. This image serves simply as a sample of what the result will roughly look like. Additionally, the program will display estimates of computation times together with the confidence level at which that estimate is realised.
 
 <p align="center">
   <img width="400" src="readme_images/screenshot1.png">
