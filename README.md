@@ -85,6 +85,11 @@ and larger numbers lead to a more stretched image
   <img width="200" src="readme_images/screenshot9.png">
 </p>
 
+The following is an example of what a normal image of a primified person may look like
+<p align="center">
+  <img width="200" src="readme_images/lnon.jpg">
+</p>
+
 # Installation and Setup
 This guide is for the setup of _asciiPrime_ in Ubuntu via WSL.
 It is assumed you have 
