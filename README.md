@@ -87,7 +87,7 @@ and larger numbers lead to a more stretched image
 
 The following is an example of what a normal image of a primified person may look like
 <p align="center">
-  <img width="200" src="readme_images/Screenshot_20220429-080130_Chrome.jpg">
+  <img width="400" src="readme_images/Screenshot_20220429-080130_Chrome.jpg">
 </p>
 
 # Installation and Setup
