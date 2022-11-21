@@ -90,6 +90,11 @@ The following is an example of what a normal image of a primified person may loo
   <img width="400" src="readme_images/Screenshot_20220429-080130_Chrome.jpg">
 </p>
 
+And here it is as an NFT
+<p align="center">
+  <img width="200" src="readme_images/asciiprime_NFT.png">
+</p>
+
 # Installation and Setup
 This guide is for the setup of _asciiPrime_ in Ubuntu via WSL.
 It is assumed you have 
