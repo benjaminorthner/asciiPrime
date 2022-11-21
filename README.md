@@ -92,7 +92,7 @@ The following is an example of what a normal image of a primified person may loo
 
 And here it is as an NFT
 <p align="center">
-  <img width="200" src="readme_images/asciiprime_NFT.png">
+  <img width="800" src="readme_images/asciiprime_NFT.png">
 </p>
 
 # Installation and Setup
