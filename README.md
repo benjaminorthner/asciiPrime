@@ -6,7 +6,7 @@
 Converts images into numerical ascii art which is also a prime number. Primality is checked using the Rabin-Miller Strong Pseudoprime Test, as shown in section 4.5.4 algorithm P of Donald E. Knuth's “The Art of Computer Programming”, volume 2
 
 # Usage Instructions
-We will first need an image to convert to into an AsciiPrime. The program can handle any standard _.png_ or _.jpg_, but for now it will only desaturate it and not do a particularly good job of posterising it. Thus it is recommended to start with images that already have a lot of contrast and lots of fully black and fully white sections. 
+We will first need an image to convert into an AsciiPrime. The program can handle any standard _.png_ or _.jpg_, but for now it will only desaturate it and not do a particularly good job of posterising it. Thus it is recommended to start with images that already have a lot of contrast and lots of fully black and fully white sections. 
 
 A good example would be the following:
 
